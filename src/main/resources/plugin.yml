@@ -1,0 +1,6 @@
+name: regions
+version: '1.0-SNAPSHOT'
+main: pl.niker.regions.Main
+api-version: '1.21.4'
+authors: [ Niker ]
+website: dc.cosmosmc.pl

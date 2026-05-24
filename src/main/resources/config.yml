@@ -1,0 +1,14 @@
+messages:
+  chorus-teleport: "&cNie możesz tutaj używać &4chorus'a&c!"
+  block-break: "&cNie możesz tutaj &4niszczyć&c bloków&c!"
+  block-place: "&cNie możesz tutaj &4stawiać&c bloków!"
+  item-pickup: "&cNie możesz tutaj &4podnosić&c przedmiotów!"
+  ender-pearl: "&cNie możesz tutaj &4rzucać &cenderpearl!"
+  item-drop: "&cNie możesz tutaj &4wyrzucać &cprzedmiotów!"
+  gliding: "&cNie możesz tutaj &4latać &celytrą!"
+  damage: ""
+  fire: "&cNie możesz tutaj się &4palić&c!"
+  pvp: "&cNie możesz się tutaj &4bić&c!"
+  use: "&cNie możesz tutaj &4używać&c przedmiotów!"
+
+regions: []
