@@ -1,7 +1,12 @@
 package pl.niker.regions.managers;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import pl.niker.regions.types.ActionType;
 
@@ -12,8 +17,21 @@ public class SelectorManager {
     private final HashMap<UUID, Location> right = new HashMap<>();
     private final JavaPlugin plugin;
 
+    private final ItemStack selectorItem;
+
     public SelectorManager(JavaPlugin plugin) {
         this.plugin = plugin;
+
+        {
+            selectorItem = new ItemStack(Material.WOODEN_AXE);
+            ItemMeta meta = selectorItem.getItemMeta();
+            meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "selector"), PersistentDataType.INTEGER, 0);
+            selectorItem.setItemMeta(meta);
+        }
+    }
+
+    public ItemStack getSelectorItem() {
+        return selectorItem;
     }
 
     public void selectPosition(Player player, ActionType type, Location loc) {

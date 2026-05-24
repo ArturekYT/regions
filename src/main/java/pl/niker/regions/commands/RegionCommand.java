@@ -54,6 +54,13 @@ public class RegionCommand {
         player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
     }
 
+    @Execute(name = "selector")
+    @Permission(value = "regions.command.selector")
+    void selector(@Context Player player) {
+        player.getInventory().addItem(selectorManager.getSelectorItem());
+        player.sendMessage(TextUtil.format("&aNadano selector!"));
+    }
+
     @Execute(name = "remove")
     @Permission(value = "regions.command.remove")
     void removeRegion(@Context CommandSender player, @Arg Region region) {
