@@ -31,7 +31,7 @@ public class Main extends JavaPlugin {
         elytraManager = new ElytraManager(this, cooldownManager);
 
         getServer().getPluginManager().registerEvents(new PlayerMoveListener(regionManager), this);
-        getServer().getPluginManager().registerEvents(new PlayerQuitListener(regionManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(regionManager, selectorManager), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(selectorManager), this);
         getServer().getPluginManager().registerEvents(new RegionJoinListener(regionManager, elytraManager), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(this, regionManager, elytraManager, cooldownManager), this);

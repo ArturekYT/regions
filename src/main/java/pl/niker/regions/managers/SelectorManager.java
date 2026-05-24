@@ -13,8 +13,8 @@ import pl.niker.regions.types.ActionType;
 import java.util.*;
 
 public class SelectorManager {
-    private final HashMap<UUID, Location> left = new HashMap<>();
-    private final HashMap<UUID, Location> right = new HashMap<>();
+    public final HashMap<UUID, Location> left = new HashMap<>();
+    public final HashMap<UUID, Location> right = new HashMap<>();
     private final JavaPlugin plugin;
 
     private final ItemStack selectorItem;
