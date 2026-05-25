@@ -168,6 +168,13 @@ public class RegionManager {
         return highestPriorityRegion;
     }
 
+    public Region getRegion(String regionName) {
+        for (Region r : regions.values()) {
+            if (r.getName().equals(regionName)) return r;
+        }
+        return null;
+    }
+
     public Region getRegion(Location loc) {
         Set<String> current = getRegionNamesAtLocation(loc);
         if (current == null || current.isEmpty()) return null;
