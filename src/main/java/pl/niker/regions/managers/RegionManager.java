@@ -183,10 +183,10 @@ public class RegionManager {
         return highestPriorityRegion;
     }
 
-    public Set<String> getNearbyRegions(Location loc, double distance) {
-        if (loc == null || loc.getWorld() == null) return Collections.emptySet();
+    public List<String> getNearbyRegions(Location loc, double distance) {
+        if (loc == null || loc.getWorld() == null) return List.of();
 
-        Set<String> nearby = new HashSet<>();
+        List<String> nearby = new ArrayList<>();
         BoundingBox searchBox = BoundingBox.of(loc.toVector(), distance, distance, distance);
 
         for (Region region : regions.values()) {
