@@ -16,7 +16,7 @@ public class RegionJoinEvent extends Event {
         this.player = player;
         this.regionName = regionName;
         this.from = from;
-        this.to = to;
+        this.to = to;;
     }
 
     public Player getPlayer() { return player; }
