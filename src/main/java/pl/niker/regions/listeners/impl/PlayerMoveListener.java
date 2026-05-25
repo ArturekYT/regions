@@ -25,9 +25,7 @@ public class PlayerMoveListener implements Listener {
         if (to == null) return;
 
         Location from = e.getFrom();
-        if (from.getBlockX() == to.getBlockX() &&
-                from.getBlockY() == to.getBlockY() &&
-                from.getBlockZ() == to.getBlockZ()) return;
+        if (from.getWorld().equals(to.getWorld()) && from.distanceSquared(to) < 0.7) return;
 
         Player p = e.getPlayer();
         UUID uuid = p.getUniqueId();

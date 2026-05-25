@@ -4,6 +4,7 @@ import org.bukkit.*;
 import org.bukkit.configuration.*;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.java.*;
+import org.bukkit.util.BoundingBox;
 import pl.niker.regions.model.Region;
 import pl.niker.regions.types.RegionFlagType;
 
@@ -100,7 +101,6 @@ public class RegionManager {
             if (regSec == null) continue;
 
             int priority = regSec.getInt("priority");
-            int visiblyDistance = regSec.getInt("visiblyDistance");
             List<String> stringFlags = regSec.getStringList("flags");
             List<RegionFlagType> loadedFlags = new ArrayList<>();
             for (String f : stringFlags) {
@@ -181,6 +181,22 @@ public class RegionManager {
             }
         }
         return highestPriorityRegion;
+    }
+
+    public Set<String> getNearbyRegions(Location loc, double distance) {
+        if (loc == null || loc.getWorld() == null) return Collections.emptySet();
+
+        Set<String> nearby = new HashSet<>();
+        BoundingBox searchBox = BoundingBox.of(loc.toVector(), distance, distance, distance);
+
+        for (Region region : regions.values()) {
+            if (!loc.getWorld().equals(region.getWorld())) continue;
+
+            if (region.getBoundingBox().overlaps(searchBox)) {
+                nearby.add(region.getName());
+            }
+        }
+        return nearby;
     }
 
     public boolean isInRegion(Player player, String name) {

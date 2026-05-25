@@ -51,6 +51,7 @@ public static boolean isIn(Location location, Set<String> regions) {
     RegionManager regionManager = new RegionManager(Main.getInstance());
     return regionManager.getRegionNamesAtLocation(location).equals(regions);
 }
+
 ```
 
 ## Komendy pluginu
