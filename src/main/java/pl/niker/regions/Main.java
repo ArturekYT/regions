@@ -22,6 +22,7 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        instance = this;
         saveDefaultConfig();
 
         regionManager = new RegionManager(this);
