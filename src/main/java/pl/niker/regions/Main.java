@@ -1,7 +1,11 @@
 package pl.niker.regions;
 
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import dev.rollczi.litecommands.*;
 import dev.rollczi.litecommands.bukkit.*;
+import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.bukkit.plugin.java.*;
 import pl.niker.regions.commands.arguments.*;
@@ -21,12 +25,21 @@ public class Main extends JavaPlugin {
     private ElytraManager elytraManager;
 
     @Override
+    public void onLoad() {
+        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
+        PacketEvents.getAPI().load();
+    }
+
+    @Override
     public void onEnable() {
         instance = this;
         saveDefaultConfig();
 
+        PacketEvents.getAPI().init();
+
         regionManager = new RegionManager(this);
-        regionManager.loadRegions();
+        Bukkit.getScheduler().runTaskLater(this, () -> regionManager.loadRegions(), 10);
+
         selectorManager = new SelectorManager(this);
         cooldownManager = new CooldownManager(this);
         elytraManager = new ElytraManager(this, cooldownManager);
@@ -35,7 +48,11 @@ public class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(regionManager, selectorManager), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(selectorManager), this);
         getServer().getPluginManager().registerEvents(new RegionJoinListener(regionManager, elytraManager), this);
-        getServer().getPluginManager().registerEvents(new PlayerListener(this, regionManager, elytraManager, cooldownManager), this);
+
+        PlayerListener playerListener = new PlayerListener(this, regionManager, elytraManager, cooldownManager);
+
+        getServer().getPluginManager().registerEvents(playerListener, this);
+        PacketEvents.getAPI().getEventManager().registerListener(playerListener, PacketListenerPriority.HIGHEST);
 
         liteCommands = LiteBukkitFactory.builder(this)
                 .commands(new RegionCommand(this, regionManager, selectorManager))

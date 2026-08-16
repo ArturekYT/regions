@@ -100,6 +100,9 @@ public class RegionManager {
             ConfigurationSection regSec = sec.getConfigurationSection(key);
             if (regSec == null) continue;
 
+            String w1 = regSec.getString("loc1.world");
+            if (w1 == null) continue;
+
             int priority = regSec.getInt("priority");
             List<String> stringFlags = regSec.getStringList("flags");
             List<RegionFlagType> loadedFlags = new ArrayList<>();
@@ -108,20 +111,17 @@ public class RegionManager {
                     loadedFlags.add(RegionFlagType.valueOf(f));
                 } catch (IllegalArgumentException ignored) {}
             }
-            Location loc1 = new Location(
-                    plugin.getServer().getWorld(regSec.getString("loc1.world")),
+
+            BoundingBox box = new BoundingBox(
                     regSec.getDouble("loc1.x"),
                     regSec.getDouble("loc1.y"),
-                    regSec.getDouble("loc1.z")
-            );
-            Location loc2 = new Location(
-                    plugin.getServer().getWorld(regSec.getString("loc2.world")),
+                    regSec.getDouble("loc1.z"),
                     regSec.getDouble("loc2.x"),
                     regSec.getDouble("loc2.y"),
                     regSec.getDouble("loc2.z")
             );
 
-            regions.put(key, new Region(key, loc1, loc2, priority, loadedFlags));
+            regions.put(key, new Region(key, box, w1, priority, loadedFlags));
         }
     }
 
@@ -197,7 +197,7 @@ public class RegionManager {
         BoundingBox searchBox = BoundingBox.of(loc.toVector(), distance, distance, distance);
 
         for (Region region : regions.values()) {
-            if (!loc.getWorld().equals(region.getWorld())) continue;
+            if (region.getWorld() == null || !loc.getWorld().equals(region.getWorld())) continue;
 
             if (region.getBoundingBox().overlaps(searchBox)) {
                 nearby.add(region.getName());

@@ -1,5 +1,9 @@
 package pl.niker.regions.listeners.impl;
 
+import com.github.retrooper.packetevents.event.PacketListener;
+import com.github.retrooper.packetevents.event.PacketReceiveEvent;
+import com.github.retrooper.packetevents.protocol.packettype.PacketType;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 import io.papermc.paper.event.player.*;
 import org.bukkit.*;
 import org.bukkit.block.*;
@@ -17,7 +21,7 @@ import pl.niker.regions.model.Region;
 import pl.niker.regions.types.RegionFlagType;
 import pl.niker.regions.util.TextUtil;
 
-public class PlayerListener implements Listener {
+public class PlayerListener implements Listener, PacketListener {
     private final JavaPlugin plugin;
     private final RegionManager regionManager;
     private final ElytraManager elytraManager;
@@ -55,16 +59,62 @@ public class PlayerListener implements Listener {
         }
     }
 
+    @Override
+    public void onPacketReceive(PacketReceiveEvent e) {
+        Player p = e.getPlayer();
+        if (p == null) return;
+
+        if (e.getPacketType() == PacketType.Play.Client.INTERACT_ENTITY) {
+            WrapperPlayClientInteractEntity interact = new WrapperPlayClientInteractEntity(e);
+
+            Player target = Bukkit.getOnlinePlayers()
+                    .stream()
+                    .filter(found -> found.getUniqueId().equals(interact.getEntityId()))
+                    .findFirst()
+                    .orElse(null);
+            if (target == null) return;
+
+            {
+                Region region = regionManager.getRegion(target.getLocation());
+                if (region == null) return;
+
+                if (region.hasFlag(RegionFlagType.INVINCIBLE) || !region.hasFlag(RegionFlagType.PVP)) {
+                    e.setCancelled(true);
+                    return;
+                }
+
+                Region killRegion = regionManager.getRegion(target.getLocation());
+                if (killRegion == null) return;
+
+                if (killRegion.hasFlag(RegionFlagType.INVINCIBLE) || !killRegion.hasFlag(RegionFlagType.PVP)) {
+                    e.setCancelled(true);
+                }
+            }
+
+            {
+                Region region = regionManager.getRegion(p.getLocation());
+                if (region == null) return;
+
+                if (region.hasFlag(RegionFlagType.INVINCIBLE) || !region.hasFlag(RegionFlagType.PVP)) {
+                    e.setCancelled(true);
+                    return;
+                }
+
+                Region killRegion = regionManager.getRegion(target.getLocation());
+                if (killRegion == null) return;
+
+                if (killRegion.hasFlag(RegionFlagType.INVINCIBLE) || !killRegion.hasFlag(RegionFlagType.PVP)) {
+                    e.setCancelled(true);
+                }
+            }
+        }
+    }
+
     @EventHandler
     public void entityDamageByEntity(EntityDamageByEntityEvent e) {
         if (!(e.getEntity() instanceof Player vic)) return;
         Region region = regionManager.getRegion(vic.getLocation());
         if (region == null) return;
-
-        if (region.hasFlag(RegionFlagType.INVINCIBLE)) {
-            e.setCancelled(true);
-            return;
-        }
 
         if (!(e.getDamager() instanceof Player) && e.getDamager().getType() != EntityType.PLAYER) {
             if (!region.hasFlag(RegionFlagType.MOB_DAMAGE)) {
